@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fi" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <title>Fulla Meet</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 540px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            padding: 2rem 2.5rem 2rem;
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255,255,255,0.08);
+        }
+
+        /* ---- Language switcher ---- */
+        .lang-switcher {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        html[dir="rtl"] .lang-switcher {
+            justify-content: flex-start;
+        }
+
+        .lang-btn {
+            padding: 0.28rem 0.65rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 8px;
+            background: #f7f9fb;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            color: #374a56;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            border-color: #2c5364;
+            background: #e8f0f4;
+            color: #2c5364;
+        }
+
+        /* ---- Card header ---- */
+        .card-header {
+            text-align: center;
+            margin-bottom: 1.6rem;
+        }
+
+        .card-header .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            margin-bottom: 1rem;
+            font-size: 1.6rem;
+        }
+
+        .card-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a2a35;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            font-size: 0.875rem;
+            color: #6b7c8a;
+            margin-top: 0.3rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #d8e3ea, transparent);
+            margin-bottom: 1.6rem;
+        }
+
+        /* ---- Form ---- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #374a56;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="date"],
+        input[type="time"] {
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: #1a2a35;
+            background: #f7f9fb;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            width: 100%;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus {
+            border-color: #2c5364;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(44, 83, 100, 0.12);
+        }
+
+        input[type="text"]:valid:not(:placeholder-shown),
+        input[type="tel"]:valid:not(:placeholder-shown),
+        input[type="email"]:valid:not(:placeholder-shown) {
+            border-color: #2ecc71;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: opacity(0.5);
+            cursor: pointer;
+        }
+
+        /* ---- Hanke radio buttons ---- */
+        .hanke-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.15rem;
+        }
+
+        .hanke-btn {
+            cursor: pointer;
+        }
+
+        .hanke-btn input[type="radio"] {
+            display: none;
+        }
+
+        .hanke-btn span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0.7rem 0.4rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374a56;
+            background: #f7f9fb;
+            min-height: 54px;
+            cursor: pointer;
+            transition: all 0.15s;
+            line-height: 1.3;
+        }
+
+        .hanke-btn span:hover {
+            border-color: #2c5364;
+            background: #f0f5f8;
+        }
+
+        .hanke-btn input[type="radio"]:checked + span {
+            border-color: #2c5364;
+            background: #e8f0f4;
+            color: #2c5364;
+        }
+
+        /* ---- Submit button ---- */
+        .submit-btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+            box-shadow: 0 4px 18px rgba(44, 83, 100, 0.45);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(44, 83, 100, 0.55);
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        /* ---- Feedback message ---- */
+        .vahvistus {
+            margin-top: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .vahvistus:empty {
+            display: none;
+        }
+
+        .vahvistus.success {
+            background: #eafaf1;
+            color: #1e7e4a;
+            border: 1.5px solid #a9dfbf;
+        }
+
+        .vahvistus.error {
+            background: #fdf2f2;
+            color: #a93226;
+            border: 1.5px solid #f1a9a0;
+        }
+
+        /* ---- Footer ---- */
+        .card-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.78rem;
+            color: #8fa3b0;
+        }
+
+        /* ---- Booking list ---- */
+        .section-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #374a56;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 0.7rem;
+        }
+        .varaus-kortti {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.75rem 0.9rem;
+            border: 1.5px solid #e8f0f4;
+            border-radius: 10px;
+            margin-bottom: 0.6rem;
+            background: #f7f9fb;
+            font-size: 0.88rem;
+            color: #2a3a45;
+        }
+        .varaus-info { flex: 1; line-height: 1.5; }
+        .varaus-tila { text-align: right; }
+        .tila {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .tila.odottaa   { background: #fff3e0; color: #b26a00; border: 1px solid #ffd699; }
+        .tila.hyvaksytty { background: #eafaf1; color: #1e7e4a; border: 1px solid #a9dfbf; }
+        .confirm-msg { display: block; font-size: 0.82rem; color: #374a56; margin-top: 0.35rem; line-height: 1.4; }
+        html[dir="rtl"] .varaus-tila { text-align: left; }
+
+        /* ---- Notification banner ---- */
+        .ilmoitus-banneri {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1.5px solid;
+        }
+        .ilmoitus-banneri.success {
+            background: #eafaf1;
+            border-color: #a9dfbf;
+        }
+        .ilmoitus-banneri.reminder {
+            background: #fff8e1;
+            border-color: #ffd54f;
+        }
+        .ilmoitus-teksti {
+            flex: 1;
+            font-size: 0.87rem;
+            font-weight: 500;
+            line-height: 1.5;
+            color: #1a2a35;
+        }
+        .ilmoitus-sulje {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.55;
+            line-height: 1;
+            padding: 0;
+            color: #1a2a35;
+        }
+        .ilmoitus-sulje:hover { opacity: 1; }
+
+        /* ---- View toggle ---- */
+        .view-toggle {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 0.7rem;
+        }
+        .view-btn {
+            padding: 0.3rem 0.8rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 8px;
+            background: #f7f9fb;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            color: #374a56;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .view-btn.active {
+            border-color: #2c5364;
+            background: #e8f0f4;
+            color: #2c5364;
+        }
+
+        /* ---- Calendar ---- */
+        .kal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .kal-month {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1a2a35;
+        }
+        .kal-nav {
+            background: none;
+            border: 1.5px solid #d1dce3;
+            border-radius: 7px;
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #374a56;
+            font-family: 'Inter', sans-serif;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .kal-nav:hover { background: #e8f0f4; border-color: #2c5364; }
+        .kal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            margin-bottom: 0.5rem;
+        }
+        .kal-day-header {
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #8fa3b0;
+            text-transform: uppercase;
+            padding-bottom: 0.25rem;
+        }
+        .kal-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            font-size: 0.8rem;
+            color: #2a3a45;
+        }
+        .kal-day.today { background: #e8f0f4; font-weight: 700; }
+        .kal-day.pending  { background: #fff3e0; cursor: pointer; }
+        .kal-day.confirmed { background: #eafaf1; cursor: pointer; }
+        .kal-day.pending:hover  { filter: brightness(0.95); }
+        .kal-day.confirmed:hover { filter: brightness(0.95); }
+        .kal-day-num { font-size: 0.8rem; line-height: 1; }
+        .kal-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 2px; }
+        .kal-day.confirmed .kal-dot { background: #1e7e4a; }
+        .kal-day.pending   .kal-dot { background: #b26a00; }
+        .kal-detail {
+            margin-top: 0.4rem;
+            padding: 0.6rem 0.75rem;
+            background: #f7f9fb;
+            border-radius: 8px;
+            border: 1.5px solid #e8f0f4;
+            font-size: 0.85rem;
+            color: #2a3a45;
+            line-height: 1.5;
+        }
+
+        /* ---- Mobile ---- */
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.6rem 1.4rem 1.4rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .hanke-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+
+            <!-- Language switcher -->
+            <div class="lang-switcher">
+                <button class="lang-btn active" id="lang-fi" onclick="setLang('fi')">🇫🇮 FI</button>
+                <button class="lang-btn" id="lang-en" onclick="setLang('en')">🇬🇧 EN</button>
+                <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">🇸🇦 AR</button>
+            </div>
+
+            <!-- Notification banner (confirmation / reminder) -->
+            <div id="ilmoitus-banneri" class="ilmoitus-banneri success" style="display:none;">
+                <span id="ilmoitus-teksti" class="ilmoitus-teksti"></span>
+                <button class="ilmoitus-sulje" onclick="document.getElementById('ilmoitus-banneri').style.display='none'">&#10005;</button>
+            </div>
+
+            <div class="card-header">
+                <div class="icon">📅</div>
+                <h1>Fulla Meet</h1>
+                <p id="subtitle">Tervetuloa varaamaan aika</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <form id="asiakasLomake">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="nimi" id="label-nimi">Nimi</label>
+                        <input type="text" id="nimi" name="nimi" placeholder="Etunimi Sukunimi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="puhelin" id="label-puhelin">Puhelin</label>
+                        <input type="tel" id="puhelin" name="puhelin"
+                               placeholder="+358 40 123 4567"
+                               inputmode="numeric" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="sahkoposti" id="label-sahkoposti">Sähköposti</label>
+                        <input type="email" id="sahkoposti" name="sahkoposti"
+                               placeholder="sinä@esimerkki.fi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paiva" id="label-paiva">Päivä</label>
+                        <input type="date" id="paiva" name="paiva" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aika" id="label-aika">Aika</label>
+                        <input type="time" id="aika" name="aika" required>
+                    </div>
+
+                    <!-- Hanke: 3 radio buttons -->
+                    <div class="form-group full-width">
+                        <label id="label-hanke">Hanke</label>
+                        <div class="hanke-grid">
+                            <label class="hanke-btn">
+                                <input type="radio" name="hanke" value="talous">
+                                <span id="hanke1">💰 Talous hanke</span>
+                            </label>
+                            <label class="hanke-btn">
+                                <input type="radio" name="hanke" value="psyykkinen">
+                                <span id="hanke2">🧠 Psyykkinen hanke</span>
+                            </label>
+                            <label class="hanke-btn">
+                                <input type="radio" name="hanke" value="muu">
+                                <span id="hanke3">🤝 Apua muuhun</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="aihe" id="label-aihe">Aihe</label>
+                        <input type="text" id="aihe" name="aihe"
+                               placeholder="Tapaamisen aihe" required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">Varaa aika</button>
+            </form>
+
+            <p id="vahvistus" class="vahvistus"></p>
+
+            <!-- Omat varaukset -->
+            <div id="omat-varaukset" style="display:none;">
+                <div class="divider" style="margin-top:1.5rem;"></div>
+                <p id="label-oma-varaus" class="section-title">📋 Omat varaukset</p>
+                <div class="view-toggle">
+                    <button id="btn-lista" class="view-btn active" onclick="showView('lista')">📋 Lista</button>
+                    <button id="btn-kalenteri" class="view-btn" onclick="showView('kalenteri')">📅 Kalenteri</button>
+                </div>
+                <div id="varaus-lista"></div>
+                <div id="kalenteri-nakyma" style="display:none;">
+                    <div id="kalenteri-sisalto"></div>
+                    <div id="kal-detail" class="kal-detail" style="display:none;"></div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                Hei, <strong>KAYTTAJA_NIMI_TAHAN</strong> &nbsp;&middot;&nbsp;
+                <a href="/uloskirjautuminen" style="color:#2c5364;" id="logout-link">Kirjaudu ulos</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Flask injects the client's bookings as JSON -->
+    <meta name="csrf-token" content="CSRF_TOKEN_TAHAN">
+    <script>var ASIAKKAAN_VARAUKSET = VARAUKSET_JSON_TAHAN;</script>
+    <script src="static/script.js"></script>
+</body>
+</html>
+
+
+

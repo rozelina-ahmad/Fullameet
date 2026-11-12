@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fi" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <title>Fulla Meet – Kirjaudu</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+
+        /* ---- Language switcher ---- */
+        .lang-switcher {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.4rem;
+            margin-bottom: 1.2rem;
+        }
+        html[dir="rtl"] .lang-switcher { justify-content: flex-start; }
+        .lang-btn {
+            padding: 0.28rem 0.65rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 8px;
+            background: #f7f9fb;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: Arial, sans-serif;
+            color: #374a56;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .lang-btn:hover, .lang-btn.active {
+            border-color: #2c5364;
+            background: #e8f0f4;
+            color: #2c5364;
+        }
+
+        .logo { text-align: center; margin-bottom: 1.5rem; }
+
+        .logo .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        h1 { font-size: 1.5rem; color: #1a2a35; text-align: center; }
+
+        .subtitle {
+            color: #6b7c8a;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 0.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #374a56;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #f7f9fb;
+            outline: none;
+            font-family: Arial, sans-serif;
+            color: #1a2a35;
+        }
+
+        input:focus {
+            border-color: #2c5364;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(44,83,100,0.12);
+        }
+
+        .btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+
+        .btn:hover { opacity: 0.9; }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.875rem;
+            color: #6b7c8a;
+        }
+
+        .footer-link a { color: #2c5364; text-decoration: none; font-weight: bold; }
+
+        .msg-success {
+            background: #eafaf1;
+            color: #1e7e4a;
+            border: 1.5px solid #a9dfbf;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .msg-error {
+            background: #fdf2f2;
+            color: #a93226;
+            border: 1.5px solid #f1a9a0;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+
+        <!-- Language switcher -->
+        <div class="lang-switcher">
+            <button class="lang-btn active" id="lang-fi" onclick="setLang('fi')">🇫🇮 FI</button>
+            <button class="lang-btn" id="lang-en" onclick="setLang('en')">🇬🇧 EN</button>
+            <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">🇸🇦 AR</button>
+        </div>
+
+        <div class="logo">
+            <div class="icon">📅</div>
+            <h1>Fulla Meet</h1>
+            <p class="subtitle" id="subtitle">Kirjaudu sisään</p>
+        </div>
+
+        <!-- VIESTI -->
+
+        <form method="POST" action="/kirjaudu">
+            <input type="hidden" name="csrf_token" value="CSRF_TOKEN_TAHAN">
+            <label for="sahkoposti" id="label-email">Sähköposti</label>
+            <input type="email" id="sahkoposti" name="sahkoposti"
+                   placeholder="sinä@esimerkki.fi" required autocomplete="username">
+
+            <label for="salasana" id="label-salasana">Salasana</label>
+            <input type="password" id="salasana" name="salasana"
+                   placeholder="••••••••" required autocomplete="current-password">
+
+            <button type="submit" class="btn" id="submit-btn">Kirjaudu sisään</button>
+        </form>
+
+        <p class="footer-link"><a href="/unohtuiko-salasana" id="forgot-link">Unohtuiko salasana?</a></p>
+        <p class="footer-link" id="footer-link">
+            Ei tiliä vielä? <a href="/rekisteroidy" id="register-link">Rekisteröidy tästä</a>
+        </p>
+
+    </div>
+
+    <script>
+    var kirjauduT = {
+        fi: {
+            subtitle:      "Kirjaudu sisään",
+            label_email:   "Sähköposti",
+            ph_email:      "sinä@esimerkki.fi",
+            label_salasana:"Salasana",
+            submit:        "Kirjaudu sisään",
+            no_account:    "Ei tiliä vielä?",
+            register_link: "Rekisteröidy tästä",
+            forgot_link:   "Unohtuiko salasana?"
+        },
+        en: {
+            subtitle:      "Sign in",
+            label_email:   "Email",
+            ph_email:      "you@example.com",
+            label_salasana:"Password",
+            submit:        "Sign in",
+            no_account:    "No account yet?",
+            register_link: "Register here",
+            forgot_link:   "Forgot your password?"
+        },
+        ar: {
+            subtitle:      "تسجيل الدخول",
+            label_email:   "البريد الإلكتروني",
+            ph_email:      "you@example.com",
+            label_salasana:"كلمة المرور",
+            submit:        "تسجيل الدخول",
+            no_account:    "ليس لديك حساب؟",
+            register_link: "سجّل هنا",
+            forgot_link:   "هل نسيت كلمة المرور؟"
+        }
+    };
+
+    function setLang(lang) {
+        var tr = kirjauduT[lang];
+        document.documentElement.lang = lang;
+        document.documentElement.dir  = (lang === "ar") ? "rtl" : "ltr";
+        document.getElementById("subtitle").textContent      = tr.subtitle;
+        document.getElementById("label-email").textContent   = tr.label_email;
+        document.getElementById("sahkoposti").placeholder    = tr.ph_email;
+        document.getElementById("label-salasana").textContent= tr.label_salasana;
+        document.getElementById("submit-btn").textContent    = tr.submit;
+        document.getElementById("footer-link").childNodes[0].nodeValue = tr.no_account + " ";
+        document.getElementById("register-link").textContent= tr.register_link;
+        document.getElementById("forgot-link").textContent  = tr.forgot_link;
+        document.getElementById("lang-fi").classList.toggle("active", lang === "fi");
+        document.getElementById("lang-en").classList.toggle("active", lang === "en");
+        document.getElementById("lang-ar").classList.toggle("active", lang === "ar");
+        try { localStorage.setItem("fulla_lang", lang); } catch(e) {}
+    }
+
+    // Restore saved language on load
+    try {
+        var saved = localStorage.getItem("fulla_lang");
+        if (saved && kirjauduT[saved]) setLang(saved);
+    } catch(e) {}
+    </script>
+</body>
+</html>

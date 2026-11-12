@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fi" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <title>Fulla Meet – Rekisteröidy</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+
+        .logo { text-align: center; margin-bottom: 1.5rem; }
+
+        .logo .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        h1 { font-size: 1.5rem; color: #1a2a35; text-align: center; }
+
+        .subtitle {
+            color: #6b7c8a;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 0.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #374a56;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #f7f9fb;
+            outline: none;
+            font-family: Arial, sans-serif;
+            color: #1a2a35;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="password"]:focus {
+            border-color: #2c5364;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(44,83,100,0.12);
+        }
+
+        .btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+
+        .btn:hover { opacity: 0.9; }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.875rem;
+            color: #6b7c8a;
+        }
+
+        .footer-link a { color: #2c5364; text-decoration: none; font-weight: bold; }
+
+        /* ---- Language switcher ---- */
+        .lang-switcher {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.4rem;
+            margin-bottom: 1.2rem;
+        }
+        html[dir="rtl"] .lang-switcher { justify-content: flex-start; }
+        .lang-btn {
+            padding: 0.28rem 0.65rem;
+            border: 1.5px solid #d1dce3;
+            border-radius: 8px;
+            background: #f7f9fb;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: Arial, sans-serif;
+            color: #374a56;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .lang-btn:hover, .lang-btn.active {
+            border-color: #2c5364;
+            background: #e8f0f4;
+            color: #2c5364;
+        }
+
+        .msg-error {
+            background: #fdf2f2;
+            color: #a93226;
+            border: 1.5px solid #f1a9a0;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+
+        <!-- Language switcher -->
+        <div class="lang-switcher">
+            <button class="lang-btn active" id="lang-fi" onclick="setLang('fi')">🇫🇮 FI</button>
+            <button class="lang-btn" id="lang-en" onclick="setLang('en')">🇬🇧 EN</button>
+            <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">🇸🇦 AR</button>
+        </div>
+
+        <div class="logo">
+            <div class="icon">📅</div>
+            <h1>Fulla Meet</h1>
+            <p class="subtitle" id="subtitle">Luo uusi profiili</p>
+        </div>
+
+        <!-- VIESTI -->
+
+        <form method="POST" action="/rekisteroidy">
+            <input type="hidden" name="csrf_token" value="CSRF_TOKEN_TAHAN">
+
+            <label for="nimi" id="label-nimi">Nimi</label>
+            <input type="text" id="nimi" name="nimi"
+                   placeholder="Etunimi Sukunimi" required maxlength="100" autocomplete="name">
+
+            <label for="sahkoposti" id="label-email">Sähköposti</label>
+            <input type="email" id="sahkoposti" name="sahkoposti"
+                   placeholder="sinä@esimerkki.fi" required maxlength="254" autocomplete="email">
+
+            <label for="puhelin" id="label-puhelin">Puhelinnumero</label>
+            <input type="tel" id="puhelin" name="puhelin" placeholder="+358 40 123 4567"
+                   required minlength="5" maxlength="32" autocomplete="tel">
+
+            <label for="salasana" id="label-salasana">Salasana (8–128 merkkiä)</label>
+            <input type="password" id="salasana" name="salasana"
+                   placeholder="••••••••" required minlength="8" maxlength="128" autocomplete="new-password">
+
+            <label for="salasana-vahvistus" id="label-vahvistus">Vahvista salasana</label>
+            <input type="password" id="salasana-vahvistus" name="salasana_vahvistus"
+                   placeholder="••••••••" required minlength="8" maxlength="128" autocomplete="new-password">
+
+            <button type="submit" class="btn" id="submit-btn">Luo profiili</button>
+        </form>
+
+        <p class="footer-link">
+            <span id="have-account">Jo tili?</span> <a href="/kirjaudu" id="login-link">Kirjaudu sisään</a>
+        </p>
+
+    </div>
+    <script>
+    var regT = {
+        fi: {
+            subtitle:       "Luo uusi profiili",
+            label_nimi:     "Nimi",
+            ph_nimi:        "Etunimi Sukunimi",
+            label_email:    "Sähköposti",
+            ph_email:       "sinä@esimerkki.fi",
+            label_puhelin: "Puhelinnumero",
+            label_salasana: "Salasana (8–128 merkkiä)",
+            label_vahvistus: "Vahvista salasana",
+            password_mismatch: "Salasanat eivät täsmää.",
+            submit:         "Luo profiili",
+            have_account:   "Jo tili?",
+            login_link:     "Kirjaudu sisään"
+        },
+        en: {
+            subtitle:       "Create a new profile",
+            label_nimi:     "Name",
+            ph_nimi:        "First Last",
+            label_email:    "Email",
+            ph_email:       "you@example.com",
+            label_puhelin: "Phone number",
+            label_salasana: "Password (8–128 characters)",
+            label_vahvistus: "Confirm password",
+            password_mismatch: "Passwords do not match.",
+            submit:         "Create profile",
+            have_account:   "Already have an account?",
+            login_link:     "Sign in"
+        },
+        ar: {
+            subtitle:       "إنشاء ملف شخصي جديد",
+            label_nimi:     "الاسم",
+            ph_nimi:        "الاسم الكامل",
+            label_email:    "البريد الإلكتروني",
+            ph_email:       "you@example.com",
+            label_puhelin: "رقم الهاتف",
+            label_salasana: "كلمة المرور (٨–١٢٨ حرفًا)",
+            label_vahvistus: "تأكيد كلمة المرور",
+            password_mismatch: "كلمتا المرور غير متطابقتين.",
+            submit:         "إنشاء الملف الشخصي",
+            have_account:   "لديك حساب بالفعل؟",
+            login_link:     "تسجيل الدخول"
+        }
+    };
+
+    function setLang(lang) {
+        var tr = regT[lang];
+        document.documentElement.lang = lang;
+        document.documentElement.dir  = (lang === "ar") ? "rtl" : "ltr";
+        document.getElementById("subtitle").textContent         = tr.subtitle;
+        document.getElementById("label-nimi").textContent       = tr.label_nimi;
+        document.getElementById("nimi").placeholder             = tr.ph_nimi;
+        document.getElementById("label-email").textContent      = tr.label_email;
+        document.getElementById("sahkoposti").placeholder       = tr.ph_email;
+        document.getElementById("label-puhelin").textContent    = tr.label_puhelin;
+        document.getElementById("label-salasana").textContent   = tr.label_salasana;
+        document.getElementById("label-vahvistus").textContent  = tr.label_vahvistus;
+        tarkistaSalasanat();
+        document.getElementById("submit-btn").textContent       = tr.submit;
+        document.getElementById("have-account").textContent     = tr.have_account;
+        document.getElementById("login-link").textContent       = tr.login_link;
+        document.getElementById("lang-fi").classList.toggle("active", lang === "fi");
+        document.getElementById("lang-en").classList.toggle("active", lang === "en");
+        document.getElementById("lang-ar").classList.toggle("active", lang === "ar");
+        try { localStorage.setItem("fulla_lang", lang); } catch(e) {}
+    }
+
+    function tarkistaSalasanat() {
+        var salasana = document.getElementById("salasana");
+        var vahvistus = document.getElementById("salasana-vahvistus");
+        var lang = document.documentElement.lang;
+        vahvistus.setCustomValidity(
+            vahvistus.value && salasana.value !== vahvistus.value ? regT[lang].password_mismatch : ""
+        );
+    }
+    document.getElementById("salasana").addEventListener("input", tarkistaSalasanat);
+    document.getElementById("salasana-vahvistus").addEventListener("input", tarkistaSalasanat);
+
+    // Restore saved language on load
+    try {
+        var saved = localStorage.getItem("fulla_lang");
+        if (saved && regT[saved]) setLang(saved);
+    } catch(e) {}
+    </script>
+</body>
+</html>
